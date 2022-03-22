@@ -1,7 +1,10 @@
 package com.example.demo;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
@@ -10,9 +13,11 @@ import java.net.URI;
 public class RedirectController {
 
     @PostMapping("/redirect")
-    private ServerResponse performRedirect(@RequestBody AuthBody authBody) {
+    private ResponseEntity<String> performRedirect(@RequestBody AuthBody authBody) {
         URI uri = URI.create("https://abc.com/?q=" + authBody.getAuthCode());
-        return ServerResponse.temporaryRedirect(uri).build().block();
+        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
+                .header("Location", uri.toString())
+                .build();
     }
 
 }
